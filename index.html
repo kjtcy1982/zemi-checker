@@ -34,12 +34,12 @@ header {
   text-align: center;
 }
 header h1 {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: 0.02em;
 }
 header p {
-  font-size: 0.82rem;
+  font-size: 0.72rem;
   opacity: 0.85;
   margin-top: 0.3rem;
 }
@@ -49,7 +49,7 @@ header p {
   padding: 1rem;
 }
 .section-title {
-  font-size: 1rem;
+  font-size: 0.88rem;
   font-weight: 700;
   color: var(--primary);
   margin-bottom: 0.6rem;
@@ -90,11 +90,11 @@ header p {
   flex-shrink: 0;
 }
 .zemi-name {
-  font-size: 0.88rem;
+  font-size: 0.78rem;
   font-weight: 600;
 }
 .zemi-teacher {
-  font-size: 0.78rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
   margin-left: auto;
   white-space: nowrap;
@@ -107,7 +107,7 @@ header p {
   text-align: center;
   color: var(--text-muted);
   padding: 2rem 1rem;
-  font-size: 0.95rem;
+  font-size: 0.82rem;
 }
 /* テーブル */
 .result-table-wrap {
@@ -121,7 +121,7 @@ header p {
 table.result-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   min-width: 640px;
 }
 table.result-table th {
@@ -129,14 +129,14 @@ table.result-table th {
   color: #fff;
   font-weight: 600;
   text-align: left;
-  padding: 0.55rem 0.7rem;
+  padding: 0.4rem 0.5rem;
   white-space: nowrap;
   position: sticky;
   top: 0;
   z-index: 2;
 }
 table.result-table td {
-  padding: 0.5rem 0.7rem;
+  padding: 0.35rem 0.5rem;
   border-bottom: 1px solid #eee;
   vertical-align: top;
 }
@@ -150,12 +150,12 @@ table.result-table tr:hover td {
 .level-before {
   color: var(--accent);
   font-weight: 700;
-  font-size: 1.05em;
+  font-size: 0.95em;
 }
 .level-by-grad {
   color: var(--normal);
   font-weight: 600;
-  font-size: 1.05em;
+  font-size: 0.95em;
 }
 .annotation {
   font-size: 0.78rem;
@@ -168,7 +168,7 @@ table.result-table tr:hover td {
 }
 .zemi-tag {
   display: inline-block;
-  font-size: 0.7rem;
+  font-size: 0.63rem;
   padding: 0.1rem 0.4rem;
   border-radius: 3px;
   white-space: nowrap;
@@ -194,7 +194,7 @@ table.result-table tr:hover td {
   background: #fafafa;
   border: 1px solid var(--border);
   border-radius: 6px;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   color: var(--text-muted);
   line-height: 1.8;
 }
@@ -213,7 +213,7 @@ table.result-table tr:hover td {
   gap: 1.2rem;
   flex-wrap: wrap;
   margin-bottom: 0.8rem;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
 }
 .legend-item {
   display: flex;
@@ -223,16 +223,25 @@ table.result-table tr:hover td {
 .source-note {
   margin-top: 1.2rem;
   text-align: center;
-  font-size: 0.75rem;
+  font-size: 0.68rem;
   color: #999;
   padding-bottom: 1.5rem;
 }
 /* ── レスポンシブ ── */
+a.course-link {
+  color: var(--text);
+  text-decoration: none;
+  border-bottom: 1px dotted #999;
+}
+a.course-link:hover {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
 @media (max-width: 600px) {
-  header h1 { font-size: 1.1rem; }
+  header h1 { font-size: 0.95rem; }
   .zemi-grid { grid-template-columns: 1fr; }
-  table.result-table { font-size: 0.78rem; }
-  .legend { font-size: 0.78rem; gap: 0.8rem; }
+  table.result-table { font-size: 0.68rem; }
+  .legend { font-size: 0.68rem; gap: 0.8rem; }
 }
 </style>
 </head>
@@ -318,10 +327,14 @@ const ANNOTATIONS = {
   "*10": "3年次必修（自動登録）"
 };
 
-// 科目データ: { name, quarter, dayPeriod, instructor, reqs: { zemiId: { level: "◎"|"○", note: "" } } }
+// シラバスURL
+const SB = "https://porta.nanzan-u.ac.jp/syllabus/html/";
+
+// 科目データ
 const COURSES = [
   {
     name: "心理学実験演習IA（心理学実験）",
+    url: SB+"2026_40010070.html",
     quarter: "Q3（隔週）", dayPeriod: "水1・2", instructor: "藤田知加子 他",
     reqs: {
       jikken: { level: "◎", note: "" },
@@ -332,6 +345,7 @@ const COURSES = [
   },
   {
     name: "心理学実験演習IB（心理学実験）",
+    url: SB+"2026_40010071.html",
     quarter: "Q4（隔週）", dayPeriod: "水1・2", instructor: "藤田知加子 他",
     reqs: {
       jikken: { level: "◎", note: "" },
@@ -342,6 +356,7 @@ const COURSES = [
   },
   {
     name: "心理学実験演習II",
+    url: SB+"2026_40010079.html",
     quarter: "Q2集中", dayPeriod: "金3・4他", instructor: "藤田知加子",
     reqs: {
       jikken: { level: "◎", note: "" }
@@ -349,6 +364,7 @@ const COURSES = [
   },
   {
     name: "学習・言語心理学",
+    url: SB+"2026_40008944.html",
     quarter: "Q1", dayPeriod: "水1・2", instructor: "藤田知加子",
     reqs: {
       jikken: { level: "◎", note: "*3" }
@@ -356,6 +372,7 @@ const COURSES = [
   },
   {
     name: "知覚・認知心理学",
+    url: null,
     quarter: "2026年度不開講", dayPeriod: "（隔年開講）", instructor: "—",
     reqs: {
       jikken: { level: "◎", note: "*3" }
@@ -363,6 +380,7 @@ const COURSES = [
   },
   {
     name: "心理測定法（心理学研究法）",
+    url: SB+"2026_40014276.html",
     quarter: "Q3", dayPeriod: "木3・4", instructor: "藤岡慧",
     reqs: {
       jikken: { level: "◎", note: "" },
@@ -376,6 +394,7 @@ const COURSES = [
   },
   {
     name: "心理調査法I",
+    url: SB+"2026_40014271.html",
     quarter: "Q1", dayPeriod: "木3・4", instructor: "藤岡慧",
     reqs: {
       jikken: { level: "○", note: "" },
@@ -389,6 +408,7 @@ const COURSES = [
   },
   {
     name: "心理調査法II",
+    url: SB+"2026_40014272.html",
     quarter: "Q2", dayPeriod: "月4・木4", instructor: "藤岡慧",
     reqs: {
       jikken: { level: "○", note: "" },
@@ -402,6 +422,7 @@ const COURSES = [
   },
   {
     name: "心理学統計法",
+    url: SB+"2026_40014277.html",
     quarter: "Q4", dayPeriod: "火1・金1", instructor: "藤岡慧",
     reqs: {
       jikken: { level: "○", note: "" },
@@ -414,6 +435,7 @@ const COURSES = [
   },
   {
     name: "臨床心理学（臨床心理学概論）",
+    url: SB+"2026_40012730.html",
     quarter: "Q2", dayPeriod: "火1・2", instructor: "中西美和",
     reqs: {
       seicho: { level: "◎", note: "" },
@@ -422,6 +444,7 @@ const COURSES = [
   },
   {
     name: "人間関係プロセス論（カウンセリング）I",
+    url: SB+"2026_40013566.html",
     quarter: "Q1", dayPeriod: "月3・4", instructor: "中西美和 他",
     reqs: {
       seicho: { level: "◎", note: "" }
@@ -429,6 +452,7 @@ const COURSES = [
   },
   {
     name: "人間関係プロセス論（カウンセリング）II",
+    url: SB+"2026_40013565.html",
     quarter: "Q2", dayPeriod: "火3・4", instructor: "中西美和 他",
     reqs: {
       seicho: { level: "◎", note: "" }
@@ -436,6 +460,7 @@ const COURSES = [
   },
   {
     name: "人間関係プロセス論（ファシリテーション）I",
+    url: SB+"2026_40007645.html",
     quarter: "Q3", dayPeriod: "月1・2", instructor: "池田満 他",
     reqs: {
       seicho: { level: "○", note: "" },
@@ -445,6 +470,7 @@ const COURSES = [
   },
   {
     name: "人間関係プロセス論（ファシリテーション）II",
+    url: SB+"2026_40001680.html",
     quarter: "Q4", dayPeriod: "金1・2", instructor: "池田満 他",
     reqs: {
       seicho: { level: "○", note: "" },
@@ -454,6 +480,7 @@ const COURSES = [
   },
   {
     name: "カウンセリング演習",
+    url: SB+"2026_40010348.html",
     quarter: "Q4", dayPeriod: "月3・4", instructor: "楠本和彦",
     reqs: {
       counsel: { level: "◎", note: "*6" }
@@ -461,6 +488,7 @@ const COURSES = [
   },
   {
     name: "人間関係フィールドワークI",
+    url: SB+"2026_40008604.html",
     quarter: "Q2（隔週）", dayPeriod: "水1・2", instructor: "中村和彦 他",
     reqs: {
       counsel: { level: "◎", note: "*7" }
@@ -468,6 +496,7 @@ const COURSES = [
   },
   {
     name: "人間関係フィールドワークII",
+    url: SB+"2026_40007186.html",
     quarter: "Q3", dayPeriod: "水1〜", instructor: "土屋耕治 他",
     reqs: {
       counsel: { level: "◎", note: "*7" }
@@ -475,6 +504,7 @@ const COURSES = [
   },
   {
     name: "人間関係フィールドワークIII",
+    url: SB+"2026_40007187.html",
     quarter: "Q4", dayPeriod: "水1〜", instructor: "土屋耕治 他",
     reqs: {
       counsel: { level: "◎", note: "*7" }
@@ -482,6 +512,7 @@ const COURSES = [
   },
   {
     name: "人間関係トレーニング",
+    url: SB+"2026_40014929.html",
     quarter: "夏期集中", dayPeriod: "実習 9/7-12他", instructor: "土屋耕治",
     reqs: {
       seicho: { level: "○", note: "" },
@@ -491,6 +522,7 @@ const COURSES = [
   },
   {
     name: "ファシリテーター・トレーニング",
+    url: SB+"2026_40001709.html",
     quarter: "Q1", dayPeriod: "木1・2", instructor: "中村和彦 他",
     reqs: {
       ouyou: { level: "○", note: "" }
@@ -498,6 +530,7 @@ const COURSES = [
   },
   {
     name: "心理療法論（心理学的支援法）",
+    url: SB+"2026_40007634.html",
     quarter: "Q4", dayPeriod: "月1・木1", instructor: "楠本和彦",
     reqs: {
       counsel: { level: "○", note: "" }
@@ -505,6 +538,7 @@ const COURSES = [
   },
   {
     name: "質的研究法I",
+    url: SB+"2026_40001712.html",
     quarter: "Q2", dayPeriod: "木1・2", instructor: "川浦佐知子",
     reqs: {
       seicho:   { level: "○", note: "" },
@@ -518,6 +552,7 @@ const COURSES = [
   },
   {
     name: "質的研究法II",
+    url: null,
     quarter: "時間割に記載なし", dayPeriod: "—", instructor: "—",
     reqs: {
       seicho:   { level: "○", note: "" },
@@ -531,6 +566,7 @@ const COURSES = [
   },
   {
     name: "発達心理学",
+    url: SB+"2026_40006659.html",
     quarter: "Q4", dayPeriod: "月3・木3", instructor: "西脇良",
     reqs: {
       identity: { level: "◎", note: "" },
@@ -539,6 +575,7 @@ const COURSES = [
   },
   {
     name: "社会心理学（社会・集団・家族心理学）",
+    url: SB+"2026_40007188.html",
     quarter: "Q4", dayPeriod: "月2・木2", instructor: "土屋耕治",
     reqs: {
       shakai:   { level: "◎", note: "" },
@@ -548,6 +585,7 @@ const COURSES = [
   },
   {
     name: "教育・学校心理学",
+    url: SB+"2026_40007183.html",
     quarter: "Q1", dayPeriod: "金3・4", instructor: "解良優基",
     reqs: {
       kyoiku: { level: "◎", note: "" }
@@ -555,6 +593,7 @@ const COURSES = [
   },
   {
     name: "コミュニティ心理学（福祉心理学）",
+    url: SB+"2026_40007847.html",
     quarter: "Q1", dayPeriod: "火1・金1", instructor: "池田満",
     reqs: {
       communi: { level: "◎", note: "" }
@@ -562,6 +601,7 @@ const COURSES = [
   },
   {
     name: "性と生命における人間の尊厳4（ジェンダーとセクシュアリティの心理学）",
+    url: SB+"2026_40014520.html",
     quarter: "Q2", dayPeriod: "火2・金2", instructor: "池田満",
     reqs: {
       communi: { level: "◎", note: "" }
@@ -569,6 +609,7 @@ const COURSES = [
   },
   {
     name: "教育社会史（または社会学的科目）",
+    url: SB+"2026_40005240.html",
     quarter: "Q1", dayPeriod: "月2・木2", instructor: "林雅代",
     reqs: {
       shakaishi: { level: "◎", note: "" }
@@ -576,6 +617,7 @@ const COURSES = [
   },
   {
     name: "研究方法に関する科目（計量的または質的）",
+    url: null,
     quarter: "—", dayPeriod: "—", instructor: "—",
     reqs: {
       shakaishi: { level: "○", note: "" }
@@ -646,12 +688,23 @@ function render() {
   relevant.forEach(c => {
     const tr = document.createElement("tr");
 
-    // 科目名
+    // 科目名（シラバスリンク付き）
     const tdName = document.createElement("td");
     const isNotOffered = c.quarter === "2026年度不開講" || c.quarter === "時間割に記載なし";
-    tdName.innerHTML = isNotOffered
-      ? `<span class="not-offered">${esc(c.name)}</span>`
-      : esc(c.name);
+    if (c.url) {
+      const a = document.createElement("a");
+      a.href = c.url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.className = "course-link";
+      if (isNotOffered) a.classList.add("not-offered");
+      a.textContent = c.name;
+      tdName.appendChild(a);
+    } else {
+      tdName.innerHTML = isNotOffered
+        ? `<span class="not-offered">${esc(c.name)}</span>`
+        : esc(c.name);
+    }
     tr.appendChild(tdName);
 
     // 開講時期
