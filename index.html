@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2027年度 ゼミ履修要望科目チェッカー</title>
+<style>
+:root {
+  --primary: #1a3a5c;
+  --primary-light: #e8f0fe;
+  --accent: #c0392b;
+  --accent-bg: #fdecea;
+  --normal: #2471a3;
+  --normal-bg: #eaf4fb;
+  --border: #d1d5db;
+  --bg: #f7f8fa;
+  --card: #ffffff;
+  --text: #1f2937;
+  --text-muted: #6b7280;
+  --shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  padding: 0;
+}
+header {
+  background: var(--primary);
+  color: #fff;
+  padding: 1.2rem 1rem;
+  text-align: center;
+}
+header h1 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+header p {
+  font-size: 0.82rem;
+  opacity: 0.85;
+  margin-top: 0.3rem;
+}
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+.section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.6rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid var(--primary);
+}
+/* ── ゼミ選択 ── */
+.zemi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+.zemi-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.55rem 0.7rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  user-select: none;
+}
+.zemi-item:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+}
+.zemi-item.checked {
+  background: var(--primary-light);
+  border-color: var(--primary);
+}
+.zemi-item input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--primary);
+  flex-shrink: 0;
+}
+.zemi-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+.zemi-teacher {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-left: auto;
+  white-space: nowrap;
+}
+/* ── 結果 ── */
+#result-area {
+  margin-top: 1rem;
+}
+.no-selection {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 2rem 1rem;
+  font-size: 0.95rem;
+}
+/* テーブル */
+.result-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+table.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  min-width: 640px;
+}
+table.result-table th {
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.55rem 0.7rem;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+table.result-table td {
+  padding: 0.5rem 0.7rem;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+}
+table.result-table tr:last-child td {
+  border-bottom: none;
+}
+table.result-table tr:hover td {
+  background: #f0f4f8;
+}
+/* 要望レベル */
+.level-before {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.05em;
+}
+.level-by-grad {
+  color: var(--normal);
+  font-weight: 600;
+  font-size: 1.05em;
+}
+.annotation {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+.zemi-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+.zemi-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.zemi-tag-before {
+  background: var(--accent-bg);
+  color: var(--accent);
+  border: 1px solid #f5c6cb;
+}
+.zemi-tag-grad {
+  background: var(--normal-bg);
+  color: var(--normal);
+  border: 1px solid #bee5eb;
+}
+.not-offered {
+  color: #999;
+  font-style: italic;
+}
+/* 注釈 */
+.footnotes {
+  margin-top: 1rem;
+  padding: 0.8rem 1rem;
+  background: #fafafa;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+.footnotes dt {
+  font-weight: 700;
+  float: left;
+  clear: left;
+  margin-right: 0.3rem;
+}
+.footnotes dd {
+  margin-bottom: 0.15rem;
+}
+/* 凡例 */
+.legend {
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.8rem;
+  font-size: 0.85rem;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.source-note {
+  margin-top: 1.2rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #999;
+  padding-bottom: 1.5rem;
+}
+/* ── レスポンシブ ── */
+@media (max-width: 600px) {
+  header h1 { font-size: 1.1rem; }
+  .zemi-grid { grid-template-columns: 1fr; }
+  table.result-table { font-size: 0.78rem; }
+  .legend { font-size: 0.78rem; gap: 0.8rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>2027年度 ゼミ履修要望科目チェッカー</h1>
+  <p>希望するゼミにチェックを入れると、履修要望科目の一覧が表示されます</p>
+</header>
+
+<div class="container">
+
+  <h2 class="section-title">ゼミを選択</h2>
+  <div class="zemi-grid" id="zemi-grid"></div>
+
+  <div id="result-area">
+    <div class="no-selection" id="no-selection">上のゼミにチェックを入れてください</div>
+    <div id="result-content" style="display:none;">
+      <h2 class="section-title">履修要望科目一覧</h2>
+      <div class="legend">
+        <span class="legend-item"><span class="level-before">◎</span> ゼミ加入前までに履修要望</span>
+        <span class="legend-item"><span class="level-by-grad">○</span> 卒業までに履修要望</span>
+      </div>
+      <div class="result-table-wrap">
+        <table class="result-table" id="result-table">
+          <thead>
+            <tr>
+              <th>科目名</th>
+              <th>開講時期</th>
+              <th>曜日・時限</th>
+              <th>担当教員</th>
+              <th>要望レベル・ゼミ</th>
+            </tr>
+          </thead>
+          <tbody id="result-tbody"></tbody>
+        </table>
+      </div>
+      <div class="footnotes" id="footnotes"></div>
+    </div>
+  </div>
+
+  <div class="source-note">
+    開講情報は2026年度学部時間割表（2026.3.12版）および集中講義一覧より取得。<br>
+    2027年度の時間割は変更される可能性があります。
+  </div>
+</div>
+
+<script>
+// ── データ定義 ──
+const ZEMIS = [
+  { id: "jikken",   name: "実験・認知心理学ゼミ",     teacher: "藤田 知加子" },
+  { id: "keiryo",   name: "計量心理学ゼミ",           teacher: "藤岡 慧" },
+  { id: "seicho",   name: "心理的成長研究ゼミ",       teacher: "中西 美和" },
+  { id: "counsel",  name: "カウンセリング研究ゼミ",   teacher: "楠本 和彦" },
+  { id: "ningen",   name: "人間性心理学ゼミ",         teacher: "石倉 篤" },
+  { id: "ouyou",    name: "応用行動科学ゼミ",         teacher: "中村 和彦" },
+  { id: "shakai",   name: "社会心理学ゼミ",           teacher: "土屋 耕治" },
+  { id: "communi",  name: "コミュニティ心理学ゼミ",   teacher: "池田 満" },
+  { id: "identity", name: "アイデンティティ研究ゼミ", teacher: "川浦 佐知子" },
+  { id: "jido",     name: "児童心理学ゼミ",           teacher: "西脇 良" },
+  { id: "kyoiku",   name: "教育心理学ゼミ",           teacher: "解良 優基" },
+  { id: "shakaishi",name: "教育・社会史ゼミ",         teacher: "林 雅代" }
+];
+
+// 短縮名（タグ表示用）
+const ZEMI_SHORT = {
+  jikken: "実験・認知", keiryo: "計量", seicho: "心理的成長", counsel: "カウンセリング",
+  ningen: "人間性", ouyou: "応用行動", shakai: "社会", communi: "コミュニティ",
+  identity: "アイデンティティ", jido: "児童", kyoiku: "教育", shakaishi: "教育・社会史"
+};
+
+// 注釈
+const ANNOTATIONS = {
+  "*1": "抽選落ちで受講できなかった場合は選抜に影響しない",
+  "*2": "任意（修得してほしいが要望としては任意）",
+  "*3": "隔年開講につき当該学年が履修できる方",
+  "*4": "必ず2年次に受講すること",
+  "*5": "必須",
+  "*6": "必須と言いたい程、強く要望",
+  "*7": "フィールドワークI・II・III または 人間関係トレーニング のどちらか",
+  "*8": "お勧め",
+  "*9": "質的研究を行う予定がある人は必ず受講",
+  "*10": "3年次必修（自動登録）"
+};
+
+// 科目データ: { name, quarter, dayPeriod, instructor, reqs: { zemiId: { level: "◎"|"○", note: "" } } }
+const COURSES = [
+  {
+    name: "心理学実験演習IA（心理学実験）",
+    quarter: "Q3（隔週）", dayPeriod: "水1・2", instructor: "藤田知加子 他",
+    reqs: {
+      jikken: { level: "◎", note: "" },
+      keiryo: { level: "◎", note: "" },
+      shakai: { level: "◎", note: "*1" },
+      kyoiku: { level: "○", note: "*2" }
+    }
+  },
+  {
+    name: "心理学実験演習IB（心理学実験）",
+    quarter: "Q4（隔週）", dayPeriod: "水1・2", instructor: "藤田知加子 他",
+    reqs: {
+      jikken: { level: "◎", note: "" },
+      keiryo: { level: "◎", note: "" },
+      shakai: { level: "◎", note: "*1" },
+      kyoiku: { level: "○", note: "*2" }
+    }
+  },
+  {
+    name: "心理学実験演習II",
+    quarter: "Q2集中", dayPeriod: "金3・4他", instructor: "藤田知加子",
+    reqs: {
+      jikken: { level: "◎", note: "" }
+    }
+  },
+  {
+    name: "学習・言語心理学",
+    quarter: "Q1", dayPeriod: "水1・2", instructor: "藤田知加子",
+    reqs: {
+      jikken: { level: "◎", note: "*3" }
+    }
+  },
+  {
+    name: "知覚・認知心理学",
+    quarter: "2026年度不開講", dayPeriod: "（隔年開講）", instructor: "—",
+    reqs: {
+      jikken: { level: "◎", note: "*3" }
+    }
+  },
+  {
+    name: "心理測定法（心理学研究法）",
+    quarter: "Q3", dayPeriod: "木3・4", instructor: "藤岡慧",
+    reqs: {
+      jikken: { level: "◎", note: "" },
+      keiryo: { level: "◎", note: "*4" },
+      seicho: { level: "◎", note: "" },
+      shakai: { level: "◎", note: "" },
+      identity: { level: "◎", note: "" },
+      jido:   { level: "◎", note: "" },
+      kyoiku: { level: "◎", note: "" }
+    }
+  },
+  {
+    name: "心理調査法I",
+    quarter: "Q1", dayPeriod: "木3・4", instructor: "藤岡慧",
+    reqs: {
+      jikken: { level: "○", note: "" },
+      keiryo: { level: "○", note: "*5" },
+      seicho: { level: "○", note: "" },
+      shakai: { level: "○", note: "" },
+      communi:{ level: "○", note: "" },
+      jido:   { level: "○", note: "" },
+      kyoiku: { level: "○", note: "" }
+    }
+  },
+  {
+    name: "心理調査法II",
+    quarter: "Q2", dayPeriod: "月4・木4", instructor: "藤岡慧",
+    reqs: {
+      jikken: { level: "○", note: "" },
+      keiryo: { level: "○", note: "*5" },
+      seicho: { level: "○", note: "" },
+      shakai: { level: "○", note: "" },
+      communi:{ level: "○", note: "" },
+      jido:   { level: "○", note: "" },
+      kyoiku: { level: "○", note: "" }
+    }
+  },
+  {
+    name: "心理学統計法",
+    quarter: "Q4", dayPeriod: "火1・金1", instructor: "藤岡慧",
+    reqs: {
+      jikken: { level: "○", note: "" },
+      keiryo: { level: "○", note: "*5" },
+      seicho: { level: "○", note: "" },
+      shakai: { level: "○", note: "" },
+      jido:   { level: "○", note: "" },
+      kyoiku: { level: "○", note: "" }
+    }
+  },
+  {
+    name: "臨床心理学（臨床心理学概論）",
+    quarter: "Q2", dayPeriod: "火1・2", instructor: "中西美和",
+    reqs: {
+      seicho: { level: "◎", note: "" },
+      ningen: { level: "◎", note: "" }
+    }
+  },
+  {
+    name: "人間関係プロセス論（カウンセリング）I",
+    quarter: "Q1", dayPeriod: "月3・4", instructor: "中西美和 他",
+    reqs: {
+      seicho: { level: "◎", note: "" }
+    }
+  },
+  {
+    name: "人間関係プロセス論（カウンセリング）II",
+    quarter: "Q2", dayPeriod: "火3・4", instructor: "中西美和 他",
+    reqs: {
+      seicho: { level: "◎", note: "" }
+    }
+  },
+  {
+    name: "人間関係プロセス論（ファシリテーション）I",
+    quarter: "Q3", dayPeriod: "月1・2", instructor: "池田満 他",
+    reqs: {
+      seicho: { level: "○", note: "" },
+      ouyou:  { level: "◎", note: "" },
+      communi:{ level: "◎", note: "" }
+    }
+  },
+  {
+    name: "人間関係プロセス論（ファシリテーション）II",
+    quarter: "Q4", dayPeriod: "金1・2", instructor: "池田満 他",
+    reqs: {
+      seicho: { level: "○", note: "" },
+      ouyou:  { level: "◎", note: "" },
+      communi:{ level: "◎", note: "" }
+    }
+  },
+  {
+    name: "カウンセリング演習",
+    quarter: "Q4", dayPeriod: "月3・4", instructor: "楠本和彦",
+    reqs: {
+      counsel: { level: "◎", note: "*6" }
+    }
+  },
+  {
+    name: "人間関係フィールドワークI",
+    quarter: "Q2（隔週）", dayPeriod: "水1・2", instructor: "中村和彦 他",
+    reqs: {
+      counsel: { level: "◎", note: "*7" }
+    }
+  },
+  {
+    name: "人間関係フィールドワークII",
+    quarter: "Q3", dayPeriod: "水1〜", instructor: "土屋耕治 他",
+    reqs: {
+      counsel: { level: "◎", note: "*7" }
+    }
+  },
+  {
+    name: "人間関係フィールドワークIII",
+    quarter: "Q4", dayPeriod: "水1〜", instructor: "土屋耕治 他",
+    reqs: {
+      counsel: { level: "◎", note: "*7" }
+    }
+  },
+  {
+    name: "人間関係トレーニング",
+    quarter: "夏期集中", dayPeriod: "実習 9/7-12他", instructor: "土屋耕治",
+    reqs: {
+      seicho: { level: "○", note: "" },
+      counsel:{ level: "◎", note: "*7" },
+      ouyou:  { level: "○", note: "*8" }
+    }
+  },
+  {
+    name: "ファシリテーター・トレーニング",
+    quarter: "Q1", dayPeriod: "木1・2", instructor: "中村和彦 他",
+    reqs: {
+      ouyou: { level: "○", note: "" }
+    }
+  },
+  {
+    name: "心理療法論（心理学的支援法）",
+    quarter: "Q4", dayPeriod: "月1・木1", instructor: "楠本和彦",
+    reqs: {
+      counsel: { level: "○", note: "" }
+    }
+  },
+  {
+    name: "質的研究法I",
+    quarter: "Q2", dayPeriod: "木1・2", instructor: "川浦佐知子",
+    reqs: {
+      seicho:   { level: "○", note: "" },
+      counsel:  { level: "○", note: "*9" },
+      ningen:   { level: "○", note: "" },
+      communi:  { level: "○", note: "" },
+      identity: { level: "○", note: "*10" },
+      jido:     { level: "○", note: "" },
+      shakaishi:{ level: "○", note: "" }
+    }
+  },
+  {
+    name: "質的研究法II",
+    quarter: "時間割に記載なし", dayPeriod: "—", instructor: "—",
+    reqs: {
+      seicho:   { level: "○", note: "" },
+      counsel:  { level: "○", note: "*9" },
+      ningen:   { level: "○", note: "" },
+      communi:  { level: "○", note: "" },
+      identity: { level: "○", note: "*10" },
+      jido:     { level: "○", note: "" },
+      shakaishi:{ level: "○", note: "" }
+    }
+  },
+  {
+    name: "発達心理学",
+    quarter: "Q4", dayPeriod: "月3・木3", instructor: "西脇良",
+    reqs: {
+      identity: { level: "◎", note: "" },
+      jido:     { level: "◎", note: "" }
+    }
+  },
+  {
+    name: "社会心理学（社会・集団・家族心理学）",
+    quarter: "Q4", dayPeriod: "月2・木2", instructor: "土屋耕治",
+    reqs: {
+      shakai:   { level: "◎", note: "" },
+      communi:  { level: "○", note: "" },
+      identity: { level: "◎", note: "" }
+    }
+  },
+  {
+    name: "教育・学校心理学",
+    quarter: "Q1", dayPeriod: "金3・4", instructor: "解良優基",
+    reqs: {
+      kyoiku: { level: "◎", note: "" }
+    }
+  },
+  {
+    name: "コミュニティ心理学（福祉心理学）",
+    quarter: "Q1", dayPeriod: "火1・金1", instructor: "池田満",
+    reqs: {
+      communi: { level: "◎", note: "" }
+    }
+  },
+  {
+    name: "性と生命における人間の尊厳4（ジェンダーとセクシュアリティの心理学）",
+    quarter: "Q2", dayPeriod: "火2・金2", instructor: "池田満",
+    reqs: {
+      communi: { level: "◎", note: "" }
+    }
+  },
+  {
+    name: "教育社会史（または社会学的科目）",
+    quarter: "Q1", dayPeriod: "月2・木2", instructor: "林雅代",
+    reqs: {
+      shakaishi: { level: "◎", note: "" }
+    }
+  },
+  {
+    name: "研究方法に関する科目（計量的または質的）",
+    quarter: "—", dayPeriod: "—", instructor: "—",
+    reqs: {
+      shakaishi: { level: "○", note: "" }
+    }
+  }
+];
+
+// ── 開講時期のソート順 ──
+const QUARTER_ORDER = {
+  "Q1": 1, "Q2": 2, "Q2集中": 2.5, "Q2（隔週）": 2.1,
+  "Q3": 3, "Q3（隔週）": 3.1,
+  "Q4": 4, "Q4（隔週）": 4.1,
+  "夏期集中": 5, "2026年度不開講": 90,
+  "時間割に記載なし": 91, "—": 99
+};
+function quarterSort(q) {
+  return QUARTER_ORDER[q] ?? 50;
+}
+
+// ── UI構築 ──
+const grid = document.getElementById("zemi-grid");
+ZEMIS.forEach(z => {
+  const label = document.createElement("label");
+  label.className = "zemi-item";
+  label.innerHTML = `<input type="checkbox" value="${z.id}"><span class="zemi-name">${z.name}</span><span class="zemi-teacher">${z.teacher}</span>`;
+  label.addEventListener("change", () => {
+    label.classList.toggle("checked", label.querySelector("input").checked);
+    render();
+  });
+  grid.appendChild(label);
+});
+
+function getChecked() {
+  return [...document.querySelectorAll('.zemi-grid input:checked')].map(cb => cb.value);
+}
+
+function render() {
+  const checked = getChecked();
+  const noSel = document.getElementById("no-selection");
+  const content = document.getElementById("result-content");
+
+  if (checked.length === 0) {
+    noSel.style.display = "block";
+    content.style.display = "none";
+    return;
+  }
+  noSel.style.display = "none";
+  content.style.display = "block";
+
+  // フィルタ＆マージ
+  const relevant = COURSES.filter(c =>
+    checked.some(z => c.reqs[z])
+  );
+
+  // ◎がある科目を先に、その中で開講時期順
+  relevant.sort((a, b) => {
+    const aHasBefore = checked.some(z => a.reqs[z] && a.reqs[z].level === "◎");
+    const bHasBefore = checked.some(z => b.reqs[z] && b.reqs[z].level === "◎");
+    if (aHasBefore !== bHasBefore) return aHasBefore ? -1 : 1;
+    return quarterSort(a.quarter) - quarterSort(b.quarter);
+  });
+
+  const tbody = document.getElementById("result-tbody");
+  tbody.innerHTML = "";
+
+  const usedNotes = new Set();
+
+  relevant.forEach(c => {
+    const tr = document.createElement("tr");
+
+    // 科目名
+    const tdName = document.createElement("td");
+    const isNotOffered = c.quarter === "2026年度不開講" || c.quarter === "時間割に記載なし";
+    tdName.innerHTML = isNotOffered
+      ? `<span class="not-offered">${esc(c.name)}</span>`
+      : esc(c.name);
+    tr.appendChild(tdName);
+
+    // 開講時期
+    const tdQ = document.createElement("td");
+    tdQ.textContent = c.quarter;
+    if (isNotOffered) tdQ.classList.add("not-offered");
+    tr.appendChild(tdQ);
+
+    // 曜日・時限
+    const tdDay = document.createElement("td");
+    tdDay.textContent = c.dayPeriod;
+    if (isNotOffered) tdDay.classList.add("not-offered");
+    tr.appendChild(tdDay);
+
+    // 担当教員
+    const tdInst = document.createElement("td");
+    tdInst.textContent = c.instructor;
+    if (isNotOffered) tdInst.classList.add("not-offered");
+    tr.appendChild(tdInst);
+
+    // 要望レベル・ゼミ
+    const tdReqs = document.createElement("td");
+    const tags = document.createElement("div");
+    tags.className = "zemi-tags";
+
+    checked.forEach(z => {
+      const r = c.reqs[z];
+      if (!r) return;
+      const span = document.createElement("span");
+      const isBefore = r.level === "◎";
+      span.className = "zemi-tag " + (isBefore ? "zemi-tag-before" : "zemi-tag-grad");
+      let label = r.level + " " + ZEMI_SHORT[z];
+      if (r.note) {
+        label += r.note;
+        usedNotes.add(r.note);
+      }
+      span.textContent = label;
+      tags.appendChild(span);
+    });
+    tdReqs.appendChild(tags);
+    tr.appendChild(tdReqs);
+
+    tbody.appendChild(tr);
+  });
+
+  // 注釈表示
+  const fn = document.getElementById("footnotes");
+  if (usedNotes.size === 0) {
+    fn.style.display = "none";
+  } else {
+    fn.style.display = "block";
+    const sortedNotes = [...usedNotes].sort((a, b) => {
+      const na = parseInt(a.replace("*", ""));
+      const nb = parseInt(b.replace("*", ""));
+      return na - nb;
+    });
+    fn.innerHTML = "<dl>" + sortedNotes.map(k =>
+      `<dt>${esc(k)}</dt><dd>${esc(ANNOTATIONS[k] || "")}</dd>`
+    ).join("") + "</dl>";
+  }
+}
+
+function esc(s) {
+  const d = document.createElement("div");
+  d.textContent = s;
+  return d.innerHTML;
+}
+</script>
+</body>
+</html>
